@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import tkinter as tk
 import random
+import threading
 
 
 class Cell:
@@ -110,7 +111,8 @@ class Block:
                         max_y = h
         return max_y
 
-
+    # @staticmethod
+    # def get_max_x_in_():
 class Grid:
 
     def __init__(self, length, height):
@@ -121,15 +123,59 @@ class Grid:
         self.current_block = None
         self.cells = [[Cell(h, l) for l in range(length)] for h in range(height)]
 
+    def set_a_cell(self):
+        self.cells[0][9].value = 1
+        self.cells[0][9].color = '#000000'
+
     def can_move(self, direction):
         if direction == 'space':
             return True
         elif direction == 'left':
-            return True
+            # return True
+            rows_can_move = []
+            for h in range(Block.SIZE):
+                if not any(self.current_block['coord'][h]):
+                    continue
+
+                l = 0
+                while self.current_block['coord'][h][l] == 0 and l < Block.SIZE:
+                    l += 1
+                x = self.active_block_x + h
+                y = self.active_block_y + l - 1
+                if y < 0 or x >= self.height:
+                    return False
+                else:
+                    if self.cells[x][y].value == 1:
+                        rows_can_move.append(False)
+                    else:
+                        rows_can_move.append(True)
+            print(rows_can_move)
+            return all(rows_can_move)
+
         elif direction == 'right':
-            return True
+            rows_can_move = []
+            for h in range(Block.SIZE):
+                if not any(self.current_block['coord'][h]):
+                    continue
+
+                l = Block.SIZE - 1
+                while self.current_block['coord'][h][l] == 0 and l >= 0:
+                    l -= 1
+                x = self.active_block_x + h
+                y = self.active_block_y + l + 1
+                if y >= self.length or x >= self.height:
+                    return False
+                else:
+                    if self.cells[x][y].value == 1:
+                        rows_can_move.append(False)
+                    else:
+                        rows_can_move.append(True)
+            print(rows_can_move)
+            return all(rows_can_move)
+
         elif direction == 'down':
             return True
+
         elif direction == 'up':
             return True
         else:
@@ -143,8 +189,9 @@ class Grid:
             for l in range(Block.SIZE):
                 x = h + self.active_block_x
                 y = l + self.active_block_y
-                self.cells[x][y].value = 0
-                self.cells[x][y].color = None
+                if 0 <= x < self.height and 0 <= y < self.length:
+                    self.cells[x][y].value = 0
+                    self.cells[x][y].color = None
         # print(self.current_block['coord'])
 
     def fill_current_block(self):
@@ -152,8 +199,13 @@ class Grid:
             for l in range(Block.SIZE):
                 x = self.active_block_x + h
                 y = self.active_block_y + l
-                self.cells[x][y].value = self.current_block['coord'][h][l]
-                self.cells[x][y].color = self.current_block.get('color')
+
+                if 0 <= x < self.height and 0 <= y < self.length:
+                    self.cells[x][y].value = self.current_block['coord'][h][l]
+                    self.cells[x][y].color = self.current_block.get('color')
+
+    def add_to_ground(self):
+        pass
 
     def move(self, direction):
         if direction == 'space':
@@ -239,6 +291,9 @@ class Tetris:
         self.panel = panel
         self.game_over = False
 
+        self.lock = threading.Lock()
+        # self.down_thread = threading.Thread(target=)
+
     def add_initial_block(self):
         block = Block.getRandomBlock()
         self.grid.current_block = block
@@ -281,6 +336,8 @@ class Tetris:
 
             if self.grid.can_move('down'):
                 self.grid.move('down')
+            else:
+                self.grid.add_to_ground()
 
         elif pressed_key in GamePanel.UP_KEYS:
             # print('%s key pressed' % pressed_key)

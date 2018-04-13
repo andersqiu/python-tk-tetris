@@ -18,6 +18,14 @@ class TestBlock(unittest.TestCase):
         self.assertEqual(pytktetris.Block.get_max_x(o_block), 1)
         self.assertEqual(pytktetris.Block.get_max_y(o_block), 1)
 
+    def test_can_move1(self):
+        grid = pytktetris.Grid(10, 20)
+        grid.active_block_x = 0
+        grid.active_block_y = 7
+        grid.current_block = pytktetris.Block.BLOCKS[-2]
+
+        self.assertFalse(grid.can_move('right'))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
