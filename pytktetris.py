@@ -7,9 +7,9 @@ import threading
 
 class Cell:
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, h, l):
+        self.h = h
+        self.l = l
         self.value = 0
         self.color = None
 
@@ -20,63 +20,210 @@ class Block:
         {
             # I block
             'type': 'I',
-            'coord': [[1, 1, 1, 1],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [1, 1, 1, 1],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 1, 1],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0]
+                      ]
+                     ],
             'color': '#00ffff'
         },
         {
             # J block
             'type': 'J',
-            'coord': [[1, 1, 1, 0],
-                      [0, 0, 1, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [1, 1, 1, 0],
+                        [0, 0, 1, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 1, 0],
+                        [0, 0, 1, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ]
+                     ],
             'color': '#0000ff'
         },
         {
             # L block
             'type': 'L',
-            'coord': [[1, 1, 1, 0],
-                      [1, 0, 0, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [1, 1, 1, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 0, 1, 0],
+                        [1, 1, 1, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0]
+                      ]
+                     ],
             'color': '#ffa500'
         },
         {   # O block
             'type': 'O',
-            'coord': [[1, 1, 0, 0],
-                      [1, 1, 0, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [1, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ]
+                     ],
             'color': '#ffff00'
         },
         {
             # S block
             'type': 'S',
-            'coord': [[0, 1, 1, 0],
-                      [1, 1, 0, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [0, 1, 1, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 0, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 1, 1, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 0, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 0]
+                      ]
+                     ],
             'color': '#00ff00'
         },
         {
             # T block
             'type': 'T',
-            'coord': [[1, 1, 1, 0],
-                      [0, 1, 0, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [1, 1, 1, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 1, 0, 0],
+                        [1, 1, 1, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 0, 0, 0],
+                        [1, 1, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ]
+                     ],
             'color': '#800080'
         },
         {
             # Z block
             'type': 'Z',
-            'coord': [[1, 1, 0, 0],
-                      [0, 1, 1, 0],
-                      [0, 0, 0, 0],
-                      [0, 0, 0, 0]],
+            'coord': [[
+                        [1, 1, 0, 0],
+                        [0, 1, 1, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [1, 1, 0, 0],
+                        [0, 1, 1, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ],
+                      [
+                        [0, 1, 0, 0],
+                        [1, 1, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 0]
+                      ]
+                     ],
             'color': '#ff0000'
         }
     ]
@@ -91,53 +238,34 @@ class Block:
     def get_start_column(grid):
         return random.choice(range(grid.length - Block.SIZE))
 
-    @staticmethod
-    def get_max_x(block):
-        max_x = 0
-        for h in range(Block.SIZE):
-            for l in range(Block.SIZE):
-                if block['coord'][h][l] == 1:
-                    if max_x < l:
-                        max_x = l
-        return max_x
-
-    @staticmethod
-    def get_max_y(block):
-        max_y = 0
-        for h in range(Block.SIZE):
-            for l in range(Block.SIZE):
-                if block['coord'][h][l] == 1:
-                    if max_y < h:
-                        max_y = h
-        return max_y
-
 
 class Grid:
 
     def __init__(self, length, height):
         self.length = length
         self.height = height
-        self.active_block_x = 0
-        self.active_block_y = 0
+        self.active_block_row = 0
+        self.active_block_col = 0
         self.current_block = None
+        self.current_block_form = 0
         self.cells = [[Cell(h, l) for l in range(length)] for h in range(height)]
-
-    def set_a_cell(self):
-        self.cells[0][9].value = 1
-        self.cells[0][9].color = '#000000'
 
     def can_add_block(self):
         return True
 
     def add_new_block(self):
-        self.active_block_x = 0
-        self.active_block_y = Block.get_start_column(self)
+        self.active_block_row = 0
+        self.active_block_col = Block.get_start_column(self)
 
         block = Block.pick_block()
         self.current_block = block
+        self.current_block_form = 0
 
         if self.can_add_block():
             self.fill_current_block()
+
+    def block_can_rotate(self):
+        return True
 
     def can_move(self, direction):
         if direction == 'space':
@@ -146,18 +274,19 @@ class Grid:
         elif direction == 'left':
             rows_can_move = []
             for h in range(Block.SIZE):
-                if not any(self.current_block['coord'][h]):
+                if not any(self.current_block['coord'][self.current_block_form][h]):
                     continue
 
                 l = 0
-                while self.current_block['coord'][h][l] == 0 and l < Block.SIZE:
+                while self.current_block['coord'][self.current_block_form][h][l] == 0 \
+                        and l < Block.SIZE:
                     l += 1
-                x = self.active_block_x + h
-                y = self.active_block_y + l - 1
-                if y < 0 or x >= self.height:
+                row = self.active_block_row + h
+                col = self.active_block_col + l - 1
+                if col < 0 or row >= self.height:
                     return False
                 else:
-                    if self.cells[x][y].value == 1:
+                    if self.cells[row][col].value == 1:
                         rows_can_move.append(False)
                     else:
                         rows_can_move.append(True)
@@ -167,18 +296,19 @@ class Grid:
         elif direction == 'right':
             rows_can_move = []
             for h in range(Block.SIZE):
-                if not any(self.current_block['coord'][h]):
+                if not any(self.current_block['coord'][self.current_block_form][h]):
                     continue
 
                 l = Block.SIZE - 1
-                while self.current_block['coord'][h][l] == 0 and l >= 0:
+                while self.current_block['coord'][self.current_block_form][h][l] == 0 \
+                        and l >= 0:
                     l -= 1
-                x = self.active_block_x + h
-                y = self.active_block_y + l + 1
-                if y >= self.length or x >= self.height:
+                row = self.active_block_row + h
+                col = self.active_block_col + l + 1
+                if col >= self.length or row >= self.height:
                     return False
                 else:
-                    if self.cells[x][y].value == 1:
+                    if self.cells[row][col].value == 1:
                         rows_can_move.append(False)
                     else:
                         rows_can_move.append(True)
@@ -190,27 +320,35 @@ class Grid:
             for l in range(Block.SIZE):
                 col = []
                 for h in range(Block.SIZE):
-                    col.append(self.current_block['coord'][h][l])
+                    col.append(self.current_block['coord'][self.current_block_form][h][l])
                 if not any(col):
                     continue
 
                 h = Block.SIZE - 1
                 while col[h] == 0 and h >= 0:
                     h -= 1
-                x = self.active_block_x + h + 1
-                y = self.active_block_y + l
-                if x >= self.height or y >= self.length:
+                row = self.active_block_row + h + 1
+                col = self.active_block_col + l
+                if row >= self.height or col >= self.length:
                     return False
                 else:
-                    if self.cells[x][y].value == 1:
+                    if self.cells[row][col].value == 1:
                         cols_can_move.append(False)
                     else:
                         cols_can_move.append(True)
 
             return all(cols_can_move)
 
-        elif direction == 'up':
-            return True
+        # elif direction == 'up':
+        #     new_form = (self.current_block_form + 1) % Block.SIZE
+        #     for h in range(Block.SIZE):
+        #         for l in range(Block.SIZE):
+        #             if self.current_block['coord'][new_form][h][l] == 1:
+        #                 row = self.active_block_row + h
+        #                 col = self.active_block_col + l
+        #                 if self.cells[row][col].value == 1:
+        #                     return False
+        #     return True
         else:
             # print('Unknown direction to move')
             pass
@@ -220,57 +358,58 @@ class Grid:
     def clear_last_block(self):
         for h in range(Block.SIZE):
             for l in range(Block.SIZE):
-                x = h + self.active_block_x
-                y = l + self.active_block_y
-                if 0 <= x < self.height and 0 <= y < self.length:
-                    if self.current_block['coord'][h][l] == 1:
-                        self.cells[x][y].value = 0
-                        self.cells[x][y].color = None
+                row = self.active_block_row + h
+                col = self.active_block_col + l
+                if 0 <= row < self.height and 0 <= col < self.length:
+                    if self.current_block['coord'][self.current_block_form][h][l] == 1:
+                        self.cells[row][col].value = 0
+                        self.cells[row][col].color = None
 
     def fill_current_block(self):
         for h in range(Block.SIZE):
             for l in range(Block.SIZE):
-                x = self.active_block_x + h
-                y = self.active_block_y + l
+                row = self.active_block_row + h
+                col = self.active_block_col + l
 
-                if 0 <= x < self.height and 0 <= y < self.length:
-                    if self.current_block['coord'][h][l] == 1:
-                        self.cells[x][y].value = self.current_block['coord'][h][l]
-                        self.cells[x][y].color = self.current_block.get('color')
+                if 0 <= row < self.height and 0 <= col < self.length:
+                    if self.current_block['coord'][self.current_block_form][h][l] == 1:
+                        self.cells[row][col].value = self.current_block['coord'][self.current_block_form][h][l]
+                        self.cells[row][col].color = self.current_block.get('color')
 
     def move(self, direction):
         if direction == 'left':
             self.clear_last_block()
-            self.active_block_y -= 1
+            self.active_block_col -= 1
             self.fill_current_block()
 
         elif direction == 'right':
             self.clear_last_block()
-            self.active_block_y += 1
+            self.active_block_col += 1
             self.fill_current_block()
 
         elif direction == 'down':
             self.clear_last_block()
-            self.active_block_x += 1
+            self.active_block_row += 1
             self.fill_current_block()
 
-        elif direction == 'up':
-            self.clear_last_block()
-
-            new_block = Block.pick_block()
-            while new_block.get('type') == self.current_block.get('type'):
-                new_block = Block.pick_block()
-            self.current_block = new_block
-            self.active_block_x = 0
-            start_column = Block.get_start_column(self)
-            self.active_block_y = start_column
-
-            self.fill_current_block()
+        # elif direction == 'up':
+        #
+        #     self.clear_last_block()
+        #     self.current_block_form += 1
+        #     self.current_block_form %= Block.SIZE
+        #     print(self.current_block_form)
+        #     self.fill_current_block()
 
         else:
             # print('Unknown direction to move')
             pass
 
+    def rotate_block(self):
+        self.clear_last_block()
+        self.current_block_form += 1
+        self.current_block_form %= Block.SIZE
+        print(self.current_block_form)
+        self.fill_current_block()
 
 class GamePanel:
 
@@ -301,6 +440,7 @@ class GamePanel:
 
     def repaint(self):
 
+        # print('%d， %d' % (self.grid.active_block_x, self.grid.active_block_y))
         for h in range(self.grid.height):
             for l in range(self.grid.length):
                 # print('%d\t' % self.grid.cells[h][l].value, end='\t')
@@ -355,8 +495,8 @@ class Tetris:
         elif pressed_key in GamePanel.UP_KEYS:
             # print('%s key pressed' % pressed_key)
 
-            if self.grid.can_move('up'):
-                self.grid.move('up')
+            if self.grid.block_can_rotate():
+                self.grid.rotate_block()
         else:
             pass
 
