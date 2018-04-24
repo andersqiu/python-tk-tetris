@@ -253,6 +253,29 @@ class Grid:
     def can_add_block(self):
         return True
 
+    def block_can_rotate(self):
+        return True
+
+    def has_full_row(self):
+        found_full_rows = []
+        for h in range(self.height):
+            full_row = True
+            for l in range(self.length):
+                if self.cells[h][l].value == 0:
+                    full_row = False
+                    break
+            found_full_rows.append(full_row)
+        return any(found_full_rows)
+
+    def is_full_row(self, h):
+        if h < 0 or h >= self.height:
+            return False
+
+        for l in range(self.length):
+            if self.cells[h][l].value == 0:
+                return False
+        return True
+
     def add_new_block(self):
         self.active_block_row = 0
         self.active_block_col = Block.get_start_column(self)
@@ -263,9 +286,6 @@ class Grid:
 
         if self.can_add_block():
             self.fill_current_block()
-
-    def block_can_rotate(self):
-        return True
 
     def can_move(self, direction):
         if direction == 'space':
@@ -316,11 +336,12 @@ class Grid:
             return all(rows_can_move)
 
         elif direction == 'down':
+            form = self.current_block_form
             cols_can_move = []
             for l in range(Block.SIZE):
                 col = []
                 for h in range(Block.SIZE):
-                    col.append(self.current_block['coord'][self.current_block_form][h][l])
+                    col.append(self.current_block['coord'][form][h][l])
                 if not any(col):
                     continue
 
@@ -356,24 +377,26 @@ class Grid:
         return False
 
     def clear_last_block(self):
+        form = self.current_block_form
         for h in range(Block.SIZE):
             for l in range(Block.SIZE):
                 row = self.active_block_row + h
                 col = self.active_block_col + l
                 if 0 <= row < self.height and 0 <= col < self.length:
-                    if self.current_block['coord'][self.current_block_form][h][l] == 1:
+                    if self.current_block['coord'][form][h][l] == 1:
                         self.cells[row][col].value = 0
                         self.cells[row][col].color = None
 
     def fill_current_block(self):
+        form = self.current_block_form
         for h in range(Block.SIZE):
             for l in range(Block.SIZE):
                 row = self.active_block_row + h
                 col = self.active_block_col + l
 
                 if 0 <= row < self.height and 0 <= col < self.length:
-                    if self.current_block['coord'][self.current_block_form][h][l] == 1:
-                        self.cells[row][col].value = self.current_block['coord'][self.current_block_form][h][l]
+                    if self.current_block['coord'][form][h][l] == 1:
+                        self.cells[row][col].value = self.current_block['coord'][form][h][l]
                         self.cells[row][col].color = self.current_block.get('color')
 
     def move(self, direction):
@@ -408,8 +431,34 @@ class Grid:
         self.clear_last_block()
         self.current_block_form += 1
         self.current_block_form %= Block.SIZE
-        print(self.current_block_form)
+        # print(self.current_block_form)
         self.fill_current_block()
+
+    def remove_full_rows(self):
+        new_cells = [[Cell(h, l) for l in range(self.length)]
+                                 for h in range(self.height)]
+        new_row = self.height - 1
+        full_rows_num = 0
+        for h in range(self.height - 1, -1, -1):
+            if self.is_full_row(h):
+                full_rows_num += 1
+                continue
+            for l in range(self.length):
+                new_cells[new_row][l].value = self.cells[h][l].value
+                new_cells[new_row][l].color = self.cells[h][l].color
+            new_row -= 1
+
+        for h in range(self.height):
+            for l in range(self.length):
+                self.cells[h][l].value = new_cells[h][l].value
+                self.cells[h][l].color = new_cells[h][l].color
+
+        # Todo:
+        # There're bugs here
+        self.clear_last_block()
+        self.active_block_col += full_rows_num
+        self.fill_current_block()
+
 
 class GamePanel:
 
@@ -489,7 +538,8 @@ class Tetris:
 
             if self.grid.can_move('down'):
                 self.grid.move('down')
-            else:
+
+            if not self.grid.can_move('down'):
                 self.grid.add_new_block()
 
         elif pressed_key in GamePanel.UP_KEYS:
@@ -500,6 +550,9 @@ class Tetris:
         else:
             pass
 
+        # print(self.grid.has_full_row())
+        if self.grid.has_full_row():
+            self.grid.remove_full_rows()
         self.panel.repaint()
 
     def start(self):
