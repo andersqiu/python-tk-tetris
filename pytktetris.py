@@ -1,7 +1,9 @@
 from __future__ import print_function
 
+import sys
 import tkinter as tk
 import random
+import time
 import threading
 
 
@@ -360,16 +362,6 @@ class Grid:
 
             return all(cols_can_move)
 
-        # elif direction == 'up':
-        #     new_form = (self.current_block_form + 1) % Block.SIZE
-        #     for h in range(Block.SIZE):
-        #         for l in range(Block.SIZE):
-        #             if self.current_block['coord'][new_form][h][l] == 1:
-        #                 row = self.active_block_row + h
-        #                 col = self.active_block_col + l
-        #                 if self.cells[row][col].value == 1:
-        #                     return False
-        #     return True
         else:
             # print('Unknown direction to move')
             pass
@@ -415,14 +407,6 @@ class Grid:
             self.active_block_row += 1
             self.fill_current_block()
 
-        # elif direction == 'up':
-        #
-        #     self.clear_last_block()
-        #     self.current_block_form += 1
-        #     self.current_block_form %= Block.SIZE
-        #     print(self.current_block_form)
-        #     self.fill_current_block()
-
         else:
             # print('Unknown direction to move')
             pass
@@ -435,6 +419,7 @@ class Grid:
         self.fill_current_block()
 
     def remove_full_rows(self):
+        self.clear_last_block()
         new_cells = [[Cell(h, l) for l in range(self.length)]
                                  for h in range(self.height)]
         new_row = self.height - 1
@@ -454,7 +439,6 @@ class Grid:
                 self.cells[h][l].color = new_cells[h][l].color
 
         # Todo:
-        # There're bugs here
         self.clear_last_block()
         self.active_block_col += full_rows_num
         self.fill_current_block()
@@ -508,6 +492,28 @@ class Tetris:
         self.game_over = False
 
         self.lock = threading.Lock()
+        self.going_down_thread = threading.Thread(target=self.going_down)
+
+
+
+    def going_down(self):
+        while True:
+            if not self.game_over:
+                self.lock.acquire()
+
+                print('moving down for every 1 second')
+                if self.grid.can_move('down'):
+                    self.grid.move('down')
+                    time.sleep(0.5)
+                if not self.grid.can_move('down'):
+                    self.grid.add_new_block()
+                if self.grid.has_full_row():
+                    self.grid.remove_full_rows()
+                self.lock.release()
+                self.panel.repaint()
+
+            else:
+                break
 
     def key_handle(self, event):
         if self.game_over:
@@ -555,10 +561,19 @@ class Tetris:
             self.grid.remove_full_rows()
         self.panel.repaint()
 
+    def cleanup(self):
+        self.game_over = True
+        self.panel.root.destroy()
+        sys.exit(0)
+
     def start(self):
         self.grid.add_new_block()
+        self.going_down_thread.start()
         self.panel.repaint()
+
+        self.panel.root.protocol('WM_DELETE_WINDOW', self.cleanup)
         self.panel.root.bind('<Key>', self.key_handle)
+
         self.panel.root.mainloop()
 
 
